@@ -3,31 +3,13 @@ import styles from './GetListItems.module.scss';
 import type { IGetListItemsProps } from './IGetListItemsProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
-// import interfaces
-//import { IFile, IResponseItem } from "./interfaces";
-
 import { SPFI } from "@pnp/sp";
-//import { Caching } from "@pnp/queryable";
-//import { Logger, LogLevel } from "@pnp/logging";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
-//import "@pnp/sp/items";
+import "@pnp/sp/items";
 import { getSP } from '../pnpjsConfig';
 
-//import {
-//  SPHttpClient,
-//  SPHttpClientResponse   
-//} from '@microsoft/sp-http';
-
-//export interface ISPLists {
-//  value: ISPList[];
-//}
-
-//export interface ISPList {
-//  Title: string;
-//}
-
-let panelHTML: string;
+let panelHTML: string; 
 
 export interface IAsyncAwaitPnPJsProps {
   description: string;
@@ -43,16 +25,13 @@ export default class GetListItems extends React.Component<IGetListItemsProps, {}
   //  super(props);
   //}
 
-  //private LOG_SOURCE = "🅿PnPjsExample";
-  //private LIBRARY_NAME = "Documents";
   private _sp: SPFI;
 
   constructor(props: IGetListItemsProps) {
     super(props);
     // set initial state
     this.state = {
-      items: [],
-      errors: []
+      listItems: []
     };
     this._sp = getSP();
   }
@@ -71,8 +50,6 @@ export default class GetListItems extends React.Component<IGetListItemsProps, {}
       hasTeamsContext,
       userDisplayName,
     } = this.props;
-
-    console.log("html",this.state);
 
     return (
       <section className={`${styles.getListItems} ${hasTeamsContext ? styles.teams : ''}`}>
@@ -104,21 +81,17 @@ export default class GetListItems extends React.Component<IGetListItemsProps, {}
     );
   }
 
-/*
-        url = this.props.mysite + "/_api/web/lists/getbytitle('HandS_WPI_Sections')/items?$select=*&$orderby=Title";
-
-        const responsesec = await this.props.myhttp.get(url, SPHttpClient.configurations.v1);
-        if (!(responsesec.ok)) { throw new Error(await responsesec.text()); }
-        const responseJSONsec: any = await responsesec.json();
-*/
-
-  private async _renderListAsync(): Promise<void> { 
+  private async _renderListAsync(): Promise<void> {
     const items : any[] = await this._sp.web.lists.getByTitle('Important Links').items();
+    //const container = document.getElementById('#listContainer');
+    
     console.log("items",items);
     items.forEach((item) => {
       console.log(item.LinkName);
       //const linkTitle = item.LinkName;
-      this.setState({items:`<div>${item.LinkName}</div>`});            
+      panelHTML+=`<div>${item.LinkName}</div>`;
+      console.log("html",panelHTML);
     });
   }
+  
 }
